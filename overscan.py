@@ -20,26 +20,26 @@ def add_overscan_by_line_grouping(input_path, overscan_distance=2.0):
         if not line_stored:
             line = lines[i].strip()
             # Match any G0 or G1 line with X, Y, and optional S
-            match_start = re.match(r'^(G[01])\s+X([-+]?\d*\.?\d+)(?:\s+Y([-+]?\d*\.?\d+))?(?:\s+S(\d+))?', line)
+            match_start = re.match(r'^(?:G[01]\s+)?X([-+]?\d*\.?\d+)(?:\s+Y([-+]?\d*\.?\d+))?(?:\s+S(\d+))?', line)
         else:
             line = current_line
             match_start = current_match
         if match_start:
-            y_val = float(match_start.group(3)) if match_start.group(3) else y_val
+            y_val = float(match_start.group(2)) if match_start.group(2) else y_val
             group_lines = []
             x_vals = []
             
             # Add first line to the group
-            x_vals.append(float(match_start.group(2)))
+            x_vals.append(float(match_start.group(1)))
             group_lines.append(line)
             i+=1
 
             # Collect all lines that match this same Y
             while i < len(lines):
                 current_line = lines[i].strip()
-                current_match = re.match(r'^(G[01])\s+X([-+]?\d*\.?\d+)(?:\s+Y([-+]?\d*\.?\d+))?(?:\s+S(\d+))?', current_line)
-                if current_match and ((current_match.group(3) and isclose(float(current_match.group(3)), y_val, abs_tol=1e-6)) or not current_match.group(3)):
-                    x_vals.append(float(current_match.group(2)))
+                current_match = re.match(r'^^(?:G[01]\s+)?X([-+]?\d*\.?\d+)(?:\s+Y([-+]?\d*\.?\d+))?(?:\s+S(\d+))?', current_line)
+                if current_match and ((current_match.group(2) and isclose(float(current_match.group(2)), y_val, abs_tol=1e-6)) or not current_match.group(2)):
+                    x_vals.append(float(current_match.group(1)))
                     group_lines.append(current_line)
                     i += 1
                 else:
