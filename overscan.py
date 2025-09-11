@@ -37,7 +37,7 @@ def add_overscan_by_line_grouping(input_path, overscan_distance=2.0):
             # Collect all lines that match this same Y
             while i < len(lines):
                 current_line = lines[i].strip()
-                current_match = re.match(r'^^(?:G[01]\s+)?X([-+]?\d*\.?\d+)(?:\s+Y([-+]?\d*\.?\d+))?(?:\s+S(\d+))?', current_line)
+                current_match = re.match(r'^(?:G[01]\s+)?X([-+]?\d*\.?\d+)(?:\s+Y([-+]?\d*\.?\d+))?(?:\s+S(\d+))?', current_line)
                 if current_match and ((current_match.group(2) and isclose(float(current_match.group(2)), y_val, abs_tol=1e-6)) or not current_match.group(2)):
                     x_vals.append(float(current_match.group(1)))
                     group_lines.append(current_line)
